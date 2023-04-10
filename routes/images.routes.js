@@ -1,5 +1,6 @@
 const { Router } = require("express");
-const routes = Router();
+const imageRoutes = Router();
+const { expressjwt: checkJwt } = require("express-jwt");
 const {
   storeImage,
   deleteImage,
@@ -7,12 +8,16 @@ const {
   viewImage,
 } = require("../controllers/imageController");
 
-routes.get("/image/:id", viewImage);
+imageRoutes.use(
+  checkJwt({ secret: process.env.JWT_TOKEN_KEY, algorithms: ["HS256"] })
+);
 
-routes.post("/image/create", storeImage);
+imageRoutes.get("/image/:id", viewImage);
 
-routes.put("/image/edit/:id", updateImage);
+imageRoutes.post("/image/create", storeImage);
 
-routes.delete("/image/delete/:id", deleteImage);
+imageRoutes.put("/image/edit/:id", updateImage);
 
-module.exports = routes;
+imageRoutes.delete("/image/delete/:id", deleteImage);
+
+module.exports = imageRoutes;

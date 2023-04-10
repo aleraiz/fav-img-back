@@ -1,7 +1,11 @@
 const UserModel = require("../models/user.model");
+const jwt = require("jsonwebtoken");
 
 const seeProfile = async (req, res) => {
-  const user = await UserModel.findById("64250a76691c2197b7952f57");
+  const { id } = req.params;
+  const user = await UserModel.findById(id);
+  console.log(id);
+  console.log(user);
   return res.status(200).json(user);
 };
 
@@ -23,7 +27,6 @@ const signUp = async (req, res) => {
       email,
       password,
     });
-
     user.password = await user.encryptPassword(password);
     const savedUser = await user.save();
     console.log(savedUser);
@@ -71,7 +74,26 @@ const deleteUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  res.send("Login");
+  const { email, password } = req.body;
+  console.log(req.body);
+
+  const user = await UserModel.findOne({ email: email });
+  console.log(user);
+  if (!user) {
+    return res.status(409).json({ error: "Invalid credentials" });
+  }
+
+  const verifyPassword = await user.comparePassword(password);
+
+  if (!verifyPassword) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+  const token = jwt.sign({ email, password }, process.env.JWT_TOKEN_KEY);
+  return res.status(200).json({
+    message: "Authenticated User",
+    token,
+  });
 };
 const logout = async (req, res) => {
   res.send("Logout");

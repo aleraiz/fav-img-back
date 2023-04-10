@@ -38,6 +38,15 @@ userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
+// userSchema.methods.createAccessToken = function () {
+//   const { id, email } = this;
+//   const accessToken = jwt.sign(
+//     { user: { id, email } },
+//     process.env.JWT_TOKEN_KEY
+//   );
+//   return accessToken;
+// };
+
 const UserModel = model("users", userSchema);
 
 module.exports = UserModel;

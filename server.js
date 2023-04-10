@@ -4,6 +4,7 @@ const app = express();
 const PORT = process.env.APP_PORT || 3000;
 
 // Routes
+const publicRoutes = require("./routes/public.routes");
 const userRoutes = require("./routes/user.routes");
 const imageRoutes = require("./routes/images.routes");
 
@@ -16,6 +17,7 @@ app.use(express.json());
 const dbConnection = require("./dbConnection/dbConnection");
 dbConnection();
 
+app.use(publicRoutes);
 app.use(userRoutes);
 app.use(imageRoutes);
 

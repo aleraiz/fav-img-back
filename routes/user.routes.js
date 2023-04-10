@@ -1,5 +1,6 @@
 const { Router } = require("express");
-const routes = Router();
+const userRoutes = Router();
+const { expressjwt: checkJwt } = require("express-jwt");
 const {
   seeProfile,
   signUp,
@@ -9,20 +10,16 @@ const {
   logout,
 } = require("../controllers/userController");
 
-routes.get("/", (req, res) => {
-  console.log("ok");
-  res.send("home");
-});
+userRoutes.use(
+  checkJwt({ secret: process.env.JWT_TOKEN_KEY, algorithms: ["HS256"] })
+);
 
-routes.get("/user/:id", seeProfile);
+userRoutes.get("/user/:id", seeProfile);
 
-routes.post("/user/signup", signUp);
+userRoutes.put("/user/edit/:id", editUser);
 
-routes.put("/user/edit/:id", editUser);
+userRoutes.delete("/user/delete/:id", deleteUser);
 
-routes.delete("/user/delete/:id", deleteUser);
+userRoutes.post("/user/logout", logout);
 
-routes.post("/user/login", login);
-routes.get("/user/logout", logout);
-
-module.exports = routes;
+module.exports = userRoutes;
