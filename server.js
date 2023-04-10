@@ -4,7 +4,8 @@ const app = express();
 const PORT = process.env.APP_PORT || 3000;
 
 // Routes
-const routes = require("./routes/index.routes");
+const userRoutes = require("./routes/user.routes");
+const imageRoutes = require("./routes/images.routes");
 
 app.use(express.static("public"));
 // app.use(cors());
@@ -15,7 +16,8 @@ app.use(express.json());
 const dbConnection = require("./dbConnection/dbConnection");
 dbConnection();
 
-app.use(routes);
+app.use(userRoutes);
+app.use(imageRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);

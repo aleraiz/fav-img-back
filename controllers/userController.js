@@ -5,18 +5,26 @@ const seeProfile = async (req, res) => {
   return res.status(200).json(user);
 };
 
-const createUser = async (req, res) => {
-  const { firstname, lastname, username, email, password } = req.body;
+const signUp = async (req, res) => {
+  const { firstname, lastname, username, email, password, confirmPassword } =
+    req.body;
 
-  const user = new UserModel({
-    firstname,
-    lastname,
-    username,
-    email,
-    password,
-  });
+  if (password !== confirmPassword) {
+    return res.status(409).json("Error in passwords");
+  }
+
+  //Ver si tengo que chequear aca si ya existe ese usuario o email en la BD o si cuando intenta crearlo, como en el modelo ya dice q es unico tira el error con el keyValue q dice q ya existe ese usuario o mail.
 
   try {
+    const user = new UserModel({
+      firstname,
+      lastname,
+      username,
+      email,
+      password,
+    });
+
+    user.password = await user.encryptPassword(password);
     const savedUser = await user.save();
     console.log(savedUser);
     res.status(201).json(savedUser);
@@ -62,9 +70,18 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  res.send("Login");
+};
+const logout = async (req, res) => {
+  res.send("Logout");
+};
+
 module.exports = {
   seeProfile,
-  createUser,
+  signUp,
   editUser,
   deleteUser,
+  login,
+  logout,
 };
