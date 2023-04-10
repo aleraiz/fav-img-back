@@ -3,10 +3,8 @@ const userRoutes = Router();
 const { expressjwt: checkJwt } = require("express-jwt");
 const {
   seeProfile,
-  signUp,
   editUser,
   deleteUser,
-  login,
   logout,
 } = require("../controllers/userController");
 
