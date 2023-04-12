@@ -45,11 +45,12 @@ const signUp = async (req, res) => {
       lastname,
       username,
       email,
-      password,
+      passwordHash: password,
     });
-    user.password = await user.encryptPassword(password);
+    user.passwordHash = await user.encryptPassword(password);
     const savedUser = await user.save();
     console.log(savedUser);
+
     res.status(201).json({
       message: "User successfully registered",
       savedUser,
@@ -64,7 +65,7 @@ const editUser = async (req, res) => {
   const { id } = req.params;
   console.log(id);
 
-  const { firstname, lastname, username, email, password } = req.body;
+  const { firstname, lastname, username, email } = req.body;
 
   console.log(req.body);
 
@@ -74,10 +75,12 @@ const editUser = async (req, res) => {
       lastname,
       username,
       email,
-      password,
     });
 
-    res.status(201).json(updatedUser);
+    res.status(201).json({
+      message: "User successfully updated",
+      updatedUser,
+    });
   } catch (error) {
     console.log(error);
     res.status(409).json(error);

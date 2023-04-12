@@ -1,7 +1,11 @@
-const ImageModel = require("../models/images.model");
+const ImageModel = require("../models/image.model");
+const UserModel = require("../models/user.model");
 
 const storeImage = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
+  console.log(req.auth);
+
+  const userId = req.auth.id;
 
   const { title, srcImage } = req.body;
 
@@ -11,6 +15,10 @@ const storeImage = async (req, res) => {
   });
   try {
     const savedImage = await image.save();
+    await UserModel.updateOne(
+      { _id: userId },
+      { $push: { images: image._id } }
+    );
     res.status(201).json(savedImage);
   } catch (error) {
     console.log(error);

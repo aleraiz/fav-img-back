@@ -21,10 +21,16 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
-    password: {
+    passwordHash: {
       type: String,
       required: true,
     },
+    images: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "images",
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -35,8 +41,15 @@ userSchema.methods.encryptPassword = async (password) => {
 };
 
 userSchema.methods.comparePassword = async function (password) {
-  return await bcrypt.compare(password, this.password);
+  return await bcrypt.compare(password, this.passwordHash);
 };
+
+// Para que nunca devuelva la contraseña
+userSchema.set("toJSON", {
+  transform: (document, returnedObject) => {
+    delete returnedObject.passwordHash;
+  },
+});
 
 // userSchema.methods.createAccessToken = function () {
 //   const { id, email } = this;
