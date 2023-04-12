@@ -20,10 +20,24 @@ const signUp = async (req, res) => {
     req.body;
 
   if (password !== confirmPassword) {
-    return res.status(409).json("Error in passwords");
+    return res.status(409).json("passwords do not match");
   }
 
   //Ver si tengo que chequear aca si ya existe ese usuario o email en la BD o si cuando intenta crearlo, como en el modelo ya dice q es unico tira el error con el keyValue q dice q ya existe ese usuario o mail.
+  try {
+    const emailExist = await UserModel.findOne({ email: email });
+    const userNameExist = await UserModel.findOne({ username: username });
+    console.log({ emailExist });
+    console.log({ userNameExist });
+
+    if (emailExist) {
+      return res.status(409).json("The email is already registered");
+    } else if (userNameExist) {
+      return res.status(409).json("Username is not available");
+    }
+  } catch (error) {
+    console.log(error);
+  }
 
   try {
     const user = new UserModel({
@@ -36,7 +50,10 @@ const signUp = async (req, res) => {
     user.password = await user.encryptPassword(password);
     const savedUser = await user.save();
     console.log(savedUser);
-    res.status(201).json(savedUser);
+    res.status(201).json({
+      message: "User successfully registered",
+      savedUser,
+    });
   } catch (error) {
     console.log(error);
     return res.status(409).json(error);
