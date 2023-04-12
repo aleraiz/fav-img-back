@@ -5,7 +5,7 @@ const seeProfile = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).populate("images");
     console.log(id);
     console.log(user);
     return res.status(200).json(user);
