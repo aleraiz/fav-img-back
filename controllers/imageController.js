@@ -40,7 +40,7 @@ const deleteImage = async (req, res) => {
     console.log(deletedImage);
     await UserModel.updateOne({ _id: userId }, { $pull: { images: id } });
     res.status(200).json({
-      message: "image successfully removed",
+      message: "Image successfully deleted",
       deletedImage,
     });
   } catch (error) {
