@@ -9,7 +9,7 @@ const userRoutes = require("./routes/user.routes");
 const imageRoutes = require("./routes/images.routes");
 
 app.use(express.static("public"));
-// app.use(cors());
+app.use(cors());
 app.use(express.urlencoded({ extended: true })); // para recibir datos desde los forms
 app.use(express.json());
 
