@@ -19,7 +19,10 @@ const storeImage = async (req, res) => {
       { _id: userId },
       { $push: { images: image._id } }
     );
-    res.status(201).json(savedImage);
+    res.status(201).json({
+      message: "image saved successfully",
+      savedImage,
+    });
   } catch (error) {
     console.log(error);
     return res.status(409).json(error);
@@ -30,9 +33,16 @@ const deleteImage = async (req, res) => {
   const { id } = req.params;
   console.log(id);
 
+  const userId = req.auth.id;
+
   try {
     const deletedImage = await ImageModel.findByIdAndDelete(id);
-    res.status(200).json(deletedImage);
+    console.log(deletedImage);
+    await UserModel.updateOne({ _id: userId }, { $pull: { images: id } });
+    res.status(200).json({
+      message: "image successfully removed",
+      deletedImage,
+    });
   } catch (error) {
     console.log(error);
     res.status(409).json(error);
