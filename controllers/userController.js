@@ -16,8 +16,7 @@ const seeProfile = async (req, res) => {
 };
 
 const signUp = async (req, res) => {
-  const { firstname, lastname, username, email, password, confirmPassword } =
-    req.body;
+  const { username, email, password, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
     return res.status(409).json("passwords do not match");
@@ -41,8 +40,6 @@ const signUp = async (req, res) => {
 
   try {
     const user = new UserModel({
-      firstname,
-      lastname,
       username,
       email,
       passwordHash: password,
@@ -71,8 +68,6 @@ const editUser = async (req, res) => {
 
   try {
     const updatedUser = await UserModel.findByIdAndUpdate(id, {
-      firstname,
-      lastname,
       username,
       email,
     });
